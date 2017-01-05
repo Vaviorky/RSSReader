@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">RSSRacing</string>
+    <string name="add_source">Nowy kanał RSS</string>
+    <string name="RSS_Path_Hint">Ścieżka do źródła RSS</string>
+    <string name="add_source_rss">Dodaj kanał</string>
+    <string name="youhavetofillinfields">Musisz uzupełnić wszystkie pola!</string>
+    <string name="AddingSourceAsync">Dodawanie źródła...</string>
+    <string name="channelName">Nazwa kanału</string>
+    <string name="FailureAddingRSSChannel">Nie udało się dodać kanału RSS</string>
+    <string name="SuccessfulAddingRSSChannel">Pomyślnie dodano kanał RSS</string>
+    <string name="EnterValidAddress">Wprowadź poprawny adres</string>
+</resources>
