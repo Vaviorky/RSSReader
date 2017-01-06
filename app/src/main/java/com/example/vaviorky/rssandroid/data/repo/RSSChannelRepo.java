@@ -31,10 +31,18 @@ public class RSSChannelRepo {
                 + RSSChannel.KEY_Link + " text)";
     }
 
-    public boolean Insert(RSSChannel rssChannel) {
+    public int Insert(RSSChannel rssChannel) {
         int itemchannelId;
         DatabaseManager.initializeInstance(helper);
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+
+        if (ifExists(rssChannel, db)) {
+            Log.d("Insert ", "Znaleziono ");
+
+            return -2;
+        }
+        Log.d("Insert ", "Nie znaleziono, kontynuacja... ");
+
         ContentValues values = new ContentValues();
         values.put(RSSChannel.KEY_Name, rssChannel.getName());
         values.put(RSSChannel.KEY_Link, rssChannel.getLink());
@@ -42,7 +50,7 @@ public class RSSChannelRepo {
         itemchannelId = (int) db.insert(RSSChannel.TABLE, null, values);
         DatabaseManager.getInstance().closeDatabase();
 
-        return itemchannelId != -1;
+        return itemchannelId;
     }
 
     public int Delete(RSSChannel channel) {
@@ -66,10 +74,35 @@ public class RSSChannelRepo {
             list.add(channel);
             cursor.moveToNext();
         }
+        cursor.close();
         return list;
     }
 
-    private boolean ifExists(RSSChannel channel) {
-        return false;
+    private boolean ifExists(RSSChannel channel, SQLiteDatabase db) {
+        String query = "Select * from " + RSSChannel.TABLE + " where link=\"" + channel.getLink() + "\";";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
     }
+
+    public RSSChannel getById(int channelId) {
+        RSSChannel channel = new RSSChannel();
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        String query = "Select * from " + RSSChannel.TABLE + " where ChannelId = " + channelId;
+        Cursor cursor = db.rawQuery(query, null);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            channel.setChannelId(cursor.getInt(1));
+            channel.setName(cursor.getString(1));
+            channel.setLink(cursor.getString(2));
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return channel;
+    }
+
 }

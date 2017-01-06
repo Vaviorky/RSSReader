@@ -10,10 +10,6 @@ import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 
 import java.util.List;
 
-/**
- * Created by Vaviorky on 05.01.2017.
- */
-
 public class RssItemAdapter extends RecyclerView.Adapter<RssItemAdapter.RssItemViewHolder> {
 
     private List<ChannelItem> items;
@@ -27,6 +23,7 @@ public class RssItemAdapter extends RecyclerView.Adapter<RssItemAdapter.RssItemV
 
     @Override
     public RssItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        //View view = inflater.inflate(R.layout.)
         return null;
     }
 

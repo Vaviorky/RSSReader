@@ -5,9 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.example.vaviorky.rssandroid.data.DBHelper;
 import com.example.vaviorky.rssandroid.data.DatabaseManager;
 import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
+
+import java.util.ArrayList;
 
 /**
  * Created by Vaviorky on 04.01.2017.
@@ -16,9 +19,11 @@ import com.example.vaviorky.rssandroid.data.model.RSSChannel;
 public class ChannelItemRepo {
     private static ChannelItem item;
     private final String TAG = ChannelItemRepo.class.getSimpleName();
+    private DBHelper helper;
 
-    public ChannelItemRepo() {
+    public ChannelItemRepo(DBHelper helper) {
         item = new ChannelItem();
+        this.helper = helper;
     }
 
     public static String CreateTable() {
@@ -48,11 +53,25 @@ public class ChannelItemRepo {
         return result != -1;
     }
 
-    public Cursor getData(int channelId) {
+    public ArrayList<ChannelItem> getData(int channelId) {
+        ArrayList<ChannelItem> items = new ArrayList<>();
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        Cursor res = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId =" + channelId, null);
+        Cursor res = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId = " + channelId, null);
+        RSSChannelRepo repo = new RSSChannelRepo(helper);
+        RSSChannel channel = repo.getById(channelId);
         DatabaseManager.getInstance().closeDatabase();
-        return res;
+        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+            ChannelItem newsitem = new ChannelItem();
+            newsitem.setChannel(channel);
+            newsitem.setName(res.getString(1));
+            newsitem.setDescription(res.getString(2));
+            newsitem.setLink(res.getString(3));
+            newsitem.setPubDate(res.getString(4));
+            newsitem.setThumbnailURL(res.getString(6));
+            items.add(newsitem);
+        }
+        res.close();
+        return items;
     }
 
 }
