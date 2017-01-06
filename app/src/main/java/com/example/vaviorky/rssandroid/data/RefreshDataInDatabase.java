@@ -7,10 +7,14 @@ import android.util.Log;
 
 import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
+import com.example.vaviorky.rssandroid.data.repo.ChannelItemRepo;
 import com.example.vaviorky.rssandroid.data.repo.RSSChannelRepo;
+import com.rometools.rome.io.FeedException;
 
 import org.w3c.dom.Document;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -20,58 +24,48 @@ import java.util.ArrayList;
 public class RefreshDataInDatabase {
     private RSSChannelRepo channelDAO;
     private Context context;
+    private ChannelItemRepo itemDAO;
 
     public RefreshDataInDatabase(Context context) {
         this.context = context;
         DBHelper helper = new DBHelper(context);
         channelDAO = new RSSChannelRepo(helper);
+        itemDAO = new ChannelItemRepo(helper);
     }
 
-    public void Refresh() {
-        Cursor cursor = null;
+    public void Refresh() throws ParseException, IOException, FeedException {
         RSSParser parser = new RSSParser();
         DBHelper helper = new DBHelper(context);
         DatabaseManager.initializeInstance(helper);
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ArrayList<RSSChannel> channels = channelDAO.GetAll();
-        String query = "select * from ChannelItem where ChannelId=?";
-        Log.d(this.getClass().getSimpleName(), "Refresh: before for");
         for (RSSChannel channel : channels) {
-            Log.d(this.getClass().getSimpleName(), channel.getName());
-            Boolean isPresent = false;
             Document document = parser.GetData(channel.getLink());
-            ArrayList<ChannelItem> items = parser.ItemsInChannel(document);
+            ArrayList<ChannelItem> items = parser.getChannelItemsRome(channel.getLink());
 
             for (ChannelItem it : items) {
-
                 if (!ifExists(it.getPubDate(), db)) {
-                    Log.d(this.getClass().getSimpleName(), "jest wpis w bazie!");
-                } else {
+                    itemDAO.Insert(it);
                     Log.d(this.getClass().getSimpleName(), "nie ma wpisu w bazie");
+
+                } else {
+                    Log.d(this.getClass().getSimpleName(), "jest wpis w bazie!");
+
                 }
 
-                /*try {
-                    cursor = db.rawQuery(query, new String[]{channel.getChannelId() + ""});
-                    if (cursor.getCount() > 0) {
-                        cursor.moveToFirst();
-                    }
-                } finally {
-                    cursor.close();
-                }*/
             }
         }
         DatabaseManager.getInstance().closeDatabase();
     }
 
-    private boolean ifExists(String date, SQLiteDatabase db) {
-        String query = "Select * from " + ChannelItem.TABLE + " where date = " + date;
+    private boolean ifExists(long date, SQLiteDatabase db) {
+        String query = "Select * from " + ChannelItem.TABLE + " where date = \"" + date + "\";";
         Cursor cursor = db.rawQuery(query, null);
-        if (cursor.getCount() <= 0) {
-            cursor.close();
-            return false;
-        } else {
-            cursor.close();
-            return true;
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            cursor.getLong(4);
         }
+        boolean exists = (cursor.getCount() > 0);
+        cursor.close();
+        return exists;
     }
 }

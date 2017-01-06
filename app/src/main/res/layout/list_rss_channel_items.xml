@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rss_channel_items_card_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="150dp"
     android:orientation="vertical"
     app:cardBackgroundColor="#F1F1F1"
     app:cardElevation="4dp">
@@ -16,8 +16,11 @@
             android:id="@+id/rss_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Tytul"
-            android:textSize="22dp"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <TextView
@@ -25,9 +28,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rss_item_title"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Opis"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/rss_item_date"
@@ -35,8 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/rss_item_description"
             android:text="Data"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textSize="22sp" />
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

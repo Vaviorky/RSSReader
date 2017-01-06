@@ -1,16 +1,31 @@
 package com.example.vaviorky.rssandroid.data;
 
+import android.util.Log;
+
 import com.example.vaviorky.rssandroid.data.model.ChannelItem;
+import com.rometools.rome.feed.synd.SyndEntry;
+import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
+import com.rometools.rome.io.XmlReader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,11 +35,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 
 public class RSSParser {
+    private static String TAG = RSSParser.class.getSimpleName();
+
     public RSSParser() {
     }
 
-    public ArrayList<ChannelItem> ItemsInChannel(Document document) {
+    public ArrayList<ChannelItem> ItemsInChannel(Document document) throws ParseException {
         ArrayList<ChannelItem> RssItems = new ArrayList<>();
+        DateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
         if (document != null) {
             Element root = document.getDocumentElement();
             Node channel = root.getChildNodes().item(1);
@@ -39,6 +57,7 @@ public class RSSParser {
                         if (current.getNodeName().equalsIgnoreCase("title")) {
                             item.setName(current.getTextContent());
                         } else if (current.getNodeName().equalsIgnoreCase("description")) {
+                            //String desc
                             item.setDescription(current.getTextContent());
                             if (item.getDescription().contains("img")) {
                                 String[] content = item.getDescription().split("src=\"");
@@ -46,7 +65,11 @@ public class RSSParser {
                                 item.setThumbnailURL(tempcontentwithURL[0]);
                             }
                         } else if (current.getNodeName().equalsIgnoreCase("pubDate")) {
-                            item.setPubDate(current.getTextContent());
+                            String rssDate = current.getTextContent();
+                            Date date = formatter.parse(rssDate);
+                            long timestamp = date.getTime();
+                            Log.d("Data parserg", "ItemsInChannel: " + date.getTime());
+                            item.setPubDate(timestamp);
                         } else if (current.getNodeName().equalsIgnoreCase("link")) {
                             item.setLink(current.getTextContent());
                         }
@@ -55,11 +78,15 @@ public class RSSParser {
                 }
             }
         }
+
         return RssItems;
     }
 
     public Document GetData(String address) {
         try {
+            if (!address.startsWith("http://")) {
+                address = "http://" + address;
+            }
             URL url = new URL(address);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -72,5 +99,45 @@ public class RSSParser {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ArrayList<ChannelItem> getChannelItemsRome(String feedurl) throws IOException, FeedException {
+        ArrayList<ChannelItem> list = new ArrayList<>();
+        URL url = new URL(feedurl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        Log.d(TAG, "getChannelItemsRome: first");
+        SyndFeedInput input = new SyndFeedInput();
+        XmlReader reader = new XmlReader(connection);
+        SyndFeed feed = input.build(reader);
+        List entries = feed.getEntries();
+        Iterator itEntries = entries.iterator();
+        Log.d(TAG, "getChannelItemsRome: before loop");
+        while (itEntries.hasNext()) {
+            SyndEntry entry = (SyndEntry) itEntries.next();
+            Log.d(TAG, "getChannelItemsRome: title: " + entry.getTitle());
+            Log.d(TAG, "getChannelItemsRome: description: " + entry.getDescription());
+            Log.d(TAG, "getChannelItemsRome: author: " + entry.getAuthor());
+            Log.d(TAG, "getChannelItemsRome: date: " + entry.getPublishedDate());
+            Log.d(TAG, "getChannelItemsRome: link: " + entry.getLink());
+            String author = entry.getAuthor();
+            if (author.contains("(")) {
+                int openBracket = author.indexOf('(') + 1;
+                int closeBracket = author.indexOf(')');
+                author = author.substring(openBracket, closeBracket);
+            }
+
+            String description = entry.getDescription().getValue();
+            if (description.contains("<p>")) {
+                int beginP = description.indexOf("<p>") + 3;
+                int endP = description.indexOf("</p>");
+                description = description.substring(beginP, endP);
+            }
+            ChannelItem item = new ChannelItem();
+            item.setName(entry.getTitle());
+            item.setAuthor(author);
+            item.setLink(entry.getLink());
+            item.setDescription(description);
+        }
+        return list;
     }
 }

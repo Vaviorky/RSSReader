@@ -1,5 +1,6 @@
 package com.example.vaviorky.rssandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,14 +14,14 @@ import com.example.vaviorky.rssandroid.data.repo.ChannelItemRepo;
 import java.util.List;
 
 
-public class ChannelItemsActivity extends AppCompatActivity {
-
+public class ChannelItemsActivity extends AppCompatActivity implements RssItemAdapter.RssItemCallClickCallBack {
+    private static final String TAG = ChannelItemsActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private RssItemAdapter adapter;
     private List<ChannelItem> items;
     private ChannelItemRepo repo;
     private DBHelper helper;
-
+    private int ChannelId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +32,27 @@ public class ChannelItemsActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getBundleExtra("extras");
         setTitle(extras.get("title").toString());
-        int ChannelId = (int) extras.get("id");
+        ChannelId = (int) extras.get("id");
         items = repo.getData(ChannelId);
         adapter = new RssItemAdapter(items, this);
+        adapter.setClickCallBack(this);
         recyclerView = (RecyclerView) this.findViewById(R.id.RssChannelItemsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new VerticalSpace(50));
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(int p) {
+        ChannelItem item = items.get(p);
+        Intent intent = new Intent(this, RSSDetails.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("id", item.getItemId());
+        bundle.putString("title", item.getName());
+        bundle.putString("description", item.getDescription());
+        bundle.putLong("date", item.getPubDate());
+        bundle.putInt("channelId", ChannelId);
+        bundle.putString("img", item.getThumbnailURL());
+        startActivity(intent);
     }
 }

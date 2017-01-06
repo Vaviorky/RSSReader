@@ -3,7 +3,11 @@ package com.example.vaviorky.rssandroid.data;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
+
+import com.rometools.rome.io.FeedException;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * Created by Vaviorky on 04.01.2017.
@@ -22,11 +26,18 @@ public class LoadingRSSAsync extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.d(this.getClass().getSimpleName(), "doInBackground: before refresh");
         RefreshDataInDatabase inDatabase = new RefreshDataInDatabase(context);
-        inDatabase.Refresh();
-        Log.d(this.getClass().getSimpleName(), "doInBackground: after refresh");
-
+        try {
+            try {
+                inDatabase.Refresh();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (FeedException e) {
+                e.printStackTrace();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

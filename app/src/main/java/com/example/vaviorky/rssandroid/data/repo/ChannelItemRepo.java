@@ -34,6 +34,7 @@ public class ChannelItemRepo {
                 + ChannelItem.KEY_Description + " text not null,"
                 + ChannelItem.KEY_Link + " text not null,"
                 + ChannelItem.KEY_Date + " text not null,"
+                + ChannelItem.KEY_Author + " text not null,"
                 + ChannelItem.KEY_ChannelId + " integer not null,"
                 + ChannelItem.KEY_ThumbnailURL + " text not null,"
                 + " foreign key (" + ChannelItem.KEY_ChannelId + ") references " + RSSChannel.TABLE + "(" + RSSChannel.KEY_ChannelId + "));";
@@ -47,7 +48,8 @@ public class ChannelItemRepo {
         values.put(ChannelItem.KEY_Description, channelItem.getDescription());
         values.put(ChannelItem.KEY_Link, channelItem.getLink());
         values.put(ChannelItem.KEY_Date, channelItem.getPubDate());
-        values.put(ChannelItem.KEY_ChannelId, channelItem.getChannel().getChannelId());
+        values.put(ChannelItem.KEY_ChannelId, channelItem.getChannelId());
+        values.put(ChannelItem.KEY_ThumbnailURL, channelItem.getThumbnailURL());
         long result = db.insert(ChannelItem.TABLE, null, values);
         DatabaseManager.getInstance().closeDatabase();
         return result != -1;
@@ -56,22 +58,24 @@ public class ChannelItemRepo {
     public ArrayList<ChannelItem> getData(int channelId) {
         ArrayList<ChannelItem> items = new ArrayList<>();
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        Cursor res = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId = " + channelId, null);
-        RSSChannelRepo repo = new RSSChannelRepo(helper);
-        RSSChannel channel = repo.getById(channelId);
+        Cursor cursor = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId = " + channelId, null);
         DatabaseManager.getInstance().closeDatabase();
-        for (res.moveToFirst(); !res.isAfterLast(); res.moveToNext()) {
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             ChannelItem newsitem = new ChannelItem();
-            newsitem.setChannel(channel);
-            newsitem.setName(res.getString(1));
-            newsitem.setDescription(res.getString(2));
-            newsitem.setLink(res.getString(3));
-            newsitem.setPubDate(res.getString(4));
-            newsitem.setThumbnailURL(res.getString(6));
+            newsitem.setChannelId(channelId);
+            newsitem.setName(cursor.getString(1));
+            newsitem.setDescription(cursor.getString(2));
+            newsitem.setLink(cursor.getString(3));
+            newsitem.setPubDate(cursor.getLong(4));
+            newsitem.setThumbnailURL(cursor.getString(6));
             items.add(newsitem);
         }
-        res.close();
+        cursor.close();
         return items;
+    }
+
+    public void deleteAll() {
+
     }
 
 }

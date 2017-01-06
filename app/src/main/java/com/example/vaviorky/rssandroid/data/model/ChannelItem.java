@@ -13,16 +13,18 @@ public class ChannelItem {
     public static final String KEY_Description = "description";
     public static final String KEY_Date = "date";
     public static final String KEY_Link = "link";
+    public static final String KEY_Author = "author";
     public static final String KEY_ThumbnailURL = "ThumbnailURL";
     public static final String KEY_ChannelId = "ChannelId";
 
     private int ItemId;
     private String Name;
     private String Description;
-    private String PubDate;
+    private long PubDate;
     private String Link;
+    private String author;
     private String ThumbnailURL;
-    private RSSChannel Channel;
+    private int ChannelId;
 
     public int getItemId() {
         return ItemId;
@@ -48,13 +50,6 @@ public class ChannelItem {
         Description = description;
     }
 
-    public String getPubDate() {
-        return PubDate;
-    }
-
-    public void setPubDate(String pubDate) {
-        PubDate = pubDate;
-    }
 
     public String getLink() {
         return Link;
@@ -64,12 +59,12 @@ public class ChannelItem {
         Link = link;
     }
 
-    public RSSChannel getChannel() {
-        return Channel;
+    public int getChannelId() {
+        return ChannelId;
     }
 
-    public void setChannel(RSSChannel channel) {
-        Channel = channel;
+    public void setChannelId(int channel) {
+        ChannelId = channel;
     }
 
     public String getThumbnailURL() {
@@ -78,5 +73,21 @@ public class ChannelItem {
 
     public void setThumbnailURL(String thumbnailURL) {
         ThumbnailURL = thumbnailURL;
+    }
+
+    public long getPubDate() {
+        return PubDate;
+    }
+
+    public void setPubDate(long pubDate) {
+        PubDate = pubDate;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
