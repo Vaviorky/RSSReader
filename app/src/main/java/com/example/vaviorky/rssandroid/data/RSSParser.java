@@ -103,9 +103,6 @@ public class RSSParser {
 
     public ArrayList<ChannelItem> getChannelItemsRome(String feedurl) throws IOException, FeedException {
         ArrayList<ChannelItem> list = new ArrayList<>();
-        if (!feedurl.startsWith("http://")) {
-            feedurl = "http://" + feedurl;
-        }
         URL url = new URL(feedurl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         Log.d(TAG, "getChannelItemsRome: first");

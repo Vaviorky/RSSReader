@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RSSMainActivity extends AppCompatActivity implements RssAdapter.ItemClickCallBack {
+    private static final String TAG = RSSMainActivity.class.getSimpleName();
     private DBHelper myDB;
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
@@ -70,6 +72,9 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
                             String source = rssSource.getText().toString();
                             String name = rssName.getText().toString();
                             if (IsStringHttp(source)) {
+                                if (!source.startsWith("http://")) {
+                                    source = "http://" + source;
+                                }
                                 finalDialog.dismiss();
                                 AddingChannelAsync async = new AddingChannelAsync(RSSMainActivity.this, source, name, adapter);
                                 async.execute();
@@ -142,7 +147,9 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
         Bundle bundle = new Bundle();
         bundle.putString("title", channel.getName());
         bundle.putInt("id", channel.getChannelId());
+        Log.d(TAG, "onCreate: Checking id from main activity: " + channel.getChannelId());
+
         intent.putExtra("extras", bundle);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
     }
 }

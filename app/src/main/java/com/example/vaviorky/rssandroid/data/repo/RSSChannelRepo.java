@@ -69,6 +69,7 @@ public class RSSChannelRepo {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             RSSChannel channel = new RSSChannel();
+            channel.setChannelId(cursor.getInt(0));
             channel.setName(cursor.getString(1));
             channel.setLink(cursor.getString(2));
             list.add(channel);
