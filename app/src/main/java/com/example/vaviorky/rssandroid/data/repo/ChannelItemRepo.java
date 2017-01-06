@@ -5,25 +5,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.vaviorky.rssandroid.data.DBHelper;
 import com.example.vaviorky.rssandroid.data.DatabaseManager;
 import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
 
 import java.util.ArrayList;
 
-/**
- * Created by Vaviorky on 04.01.2017.
- */
-
 public class ChannelItemRepo {
-    private static ChannelItem item;
     private final String TAG = ChannelItemRepo.class.getSimpleName();
-    private DBHelper helper;
 
-    public ChannelItemRepo(DBHelper helper) {
-        item = new ChannelItem();
-        this.helper = helper;
+    public ChannelItemRepo() {
     }
 
     public static String CreateTable() {

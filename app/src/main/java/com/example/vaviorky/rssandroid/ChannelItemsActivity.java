@@ -30,7 +30,7 @@ public class ChannelItemsActivity extends AppCompatActivity implements RssItemAd
         setContentView(R.layout.activity_channel_items);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         helper = new DBHelper(this);
-        repo = new ChannelItemRepo(helper);
+        repo = new ChannelItemRepo();
 
 
         Bundle extras = getIntent().getBundleExtra("extras");

@@ -37,11 +37,8 @@ public class RSSChannelRepo {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
 
         if (ifExists(rssChannel, db)) {
-            Log.d("Insert ", "Znaleziono ");
-
             return -2;
         }
-        Log.d("Insert ", "Nie znaleziono, kontynuacja... ");
 
         ContentValues values = new ContentValues();
         values.put(RSSChannel.KEY_Name, rssChannel.getName());

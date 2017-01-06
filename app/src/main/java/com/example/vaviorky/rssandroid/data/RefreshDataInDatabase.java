@@ -27,7 +27,7 @@ public class RefreshDataInDatabase {
         this.context = context;
         DBHelper helper = new DBHelper(context);
         channelDAO = new RSSChannelRepo(helper);
-        itemDAO = new ChannelItemRepo(helper);
+        itemDAO = new ChannelItemRepo();
     }
 
     public void Refresh() throws ParseException, IOException, FeedException {
