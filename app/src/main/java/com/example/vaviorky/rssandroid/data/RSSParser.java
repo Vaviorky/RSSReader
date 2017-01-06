@@ -103,12 +103,16 @@ public class RSSParser {
 
     public ArrayList<ChannelItem> getChannelItemsRome(String feedurl) throws IOException, FeedException {
         ArrayList<ChannelItem> list = new ArrayList<>();
+        if (!feedurl.startsWith("http://")) {
+            feedurl = "http://" + feedurl;
+        }
         URL url = new URL(feedurl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         Log.d(TAG, "getChannelItemsRome: first");
         SyndFeedInput input = new SyndFeedInput();
         XmlReader reader = new XmlReader(connection);
         SyndFeed feed = input.build(reader);
+
         List entries = feed.getEntries();
         Iterator itEntries = entries.iterator();
         Log.d(TAG, "getChannelItemsRome: before loop");
@@ -137,6 +141,10 @@ public class RSSParser {
             item.setAuthor(author);
             item.setLink(entry.getLink());
             item.setDescription(description);
+            Date date = entry.getPublishedDate();
+            item.setPubDate(date.getTime());
+            item.setThumbnailURL("");
+            list.add(item);
         }
         return list;
     }

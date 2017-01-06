@@ -48,6 +48,7 @@ public class ChannelItemRepo {
         values.put(ChannelItem.KEY_Description, channelItem.getDescription());
         values.put(ChannelItem.KEY_Link, channelItem.getLink());
         values.put(ChannelItem.KEY_Date, channelItem.getPubDate());
+        values.put(ChannelItem.KEY_Author, channelItem.getAuthor());
         values.put(ChannelItem.KEY_ChannelId, channelItem.getChannelId());
         values.put(ChannelItem.KEY_ThumbnailURL, channelItem.getThumbnailURL());
         long result = db.insert(ChannelItem.TABLE, null, values);
@@ -58,7 +59,7 @@ public class ChannelItemRepo {
     public ArrayList<ChannelItem> getData(int channelId) {
         ArrayList<ChannelItem> items = new ArrayList<>();
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        Cursor cursor = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId = " + channelId, null);
+        Cursor cursor = db.rawQuery("select * from " + ChannelItem.TABLE + " where ChannelId = " + channelId + " order by date desc", null);
         DatabaseManager.getInstance().closeDatabase();
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             ChannelItem newsitem = new ChannelItem();

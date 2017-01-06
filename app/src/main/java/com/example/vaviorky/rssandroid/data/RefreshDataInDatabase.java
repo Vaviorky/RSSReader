@@ -3,15 +3,12 @@ package com.example.vaviorky.rssandroid.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
 import com.example.vaviorky.rssandroid.data.repo.ChannelItemRepo;
 import com.example.vaviorky.rssandroid.data.repo.RSSChannelRepo;
 import com.rometools.rome.io.FeedException;
-
-import org.w3c.dom.Document;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,19 +37,12 @@ public class RefreshDataInDatabase {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         ArrayList<RSSChannel> channels = channelDAO.GetAll();
         for (RSSChannel channel : channels) {
-            Document document = parser.GetData(channel.getLink());
             ArrayList<ChannelItem> items = parser.getChannelItemsRome(channel.getLink());
-
             for (ChannelItem it : items) {
                 if (!ifExists(it.getPubDate(), db)) {
+                    it.setChannelId(channel.getChannelId());
                     itemDAO.Insert(it);
-                    Log.d(this.getClass().getSimpleName(), "nie ma wpisu w bazie");
-
-                } else {
-                    Log.d(this.getClass().getSimpleName(), "jest wpis w bazie!");
-
                 }
-
             }
         }
         DatabaseManager.getInstance().closeDatabase();

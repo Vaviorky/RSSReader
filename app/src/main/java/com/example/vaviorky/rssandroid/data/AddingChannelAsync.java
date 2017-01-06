@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.example.vaviorky.rssandroid.R;
+import com.example.vaviorky.rssandroid.data.adapter.RssAdapter;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
 import com.example.vaviorky.rssandroid.data.repo.RSSChannelRepo;
 
@@ -19,27 +20,32 @@ public class AddingChannelAsync extends AsyncTask<Void, Void, Void> {
     private ProgressDialog dialog;
     private String source, name;
     private Context context;
-    public AddingChannelAsync(Context context, String source, String name) {
+    private RssAdapter adapter;
+    private int count;
+
+    public AddingChannelAsync(Context context, String source, String name, RssAdapter adapter) {
         dialog = new ProgressDialog(context);
         dialog.setMessage(context.getString(R.string.AddingSourceAsync));
         this.source = source;
         this.name = name;
         this.context = context;
+        this.adapter = adapter;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        final int result = AddChannelToDatabase();
+        count = AddChannelToDatabase();
         Handler handler = new Handler(context.getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if (result == -1) {
+                if (count == -1) {
                     Toast.makeText(context, "Błąd przy dodawaniu kanału.", Toast.LENGTH_SHORT).show();
-                } else if (result == -2) {
+                } else if (count == -2) {
                     Toast.makeText(context, "Podany kanał już istnieje.", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Pomyślnie dodano kanał.", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -55,6 +61,15 @@ public class AddingChannelAsync extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         dialog.dismiss();
+        final Handler handler = new Handler(context.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                DBHelper helper = new DBHelper(context);
+                RSSChannelRepo repo = new RSSChannelRepo(helper);
+                adapter.reload(repo.GetAll());
+            }
+        });
         super.onPostExecute(aVoid);
     }
 

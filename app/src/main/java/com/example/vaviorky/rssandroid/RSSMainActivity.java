@@ -71,12 +71,11 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
                             String name = rssName.getText().toString();
                             if (IsStringHttp(source)) {
                                 finalDialog.dismiss();
-                                AddingChannelAsync async = new AddingChannelAsync(RSSMainActivity.this, source, name);
+                                AddingChannelAsync async = new AddingChannelAsync(RSSMainActivity.this, source, name, adapter);
                                 async.execute();
                             } else {
                                 Toast.makeText(RSSMainActivity.this, R.string.EnterValidAddress, Toast.LENGTH_SHORT).show();
                             }
-
 
                         } else {
                             Toast.makeText(RSSMainActivity.this, R.string.youhavetofillinfields, Toast.LENGTH_SHORT).show();
@@ -121,8 +120,7 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
     }
 
     private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }

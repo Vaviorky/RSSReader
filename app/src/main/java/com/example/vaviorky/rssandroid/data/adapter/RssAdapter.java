@@ -51,6 +51,12 @@ public class RssAdapter extends RecyclerView.Adapter<RssAdapter.MyViewHolder> {
         return listData.size();
     }
 
+    public void reload(List<RSSChannel> list) {
+        listData.clear();
+        listData.addAll(list);
+        notifyDataSetChanged();
+    }
+
     public interface ItemClickCallBack {
         void onItemClick(int p);
 
