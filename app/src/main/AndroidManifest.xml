@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChannelItemsActivity" />
-        <activity android:name=".RSSDetails"></activity>
+        <activity android:name=".RSSDetails" />
+        <activity android:name=".WebViewActivity"></activity>
     </application>
 
 </manifest>

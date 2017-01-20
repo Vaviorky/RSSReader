@@ -44,9 +44,11 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rssmain);
         myDB = new DBHelper(this);
+
         recyclerView = (RecyclerView) findViewById(R.id.RssChannelsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         RSSChannelRepo repo = new RSSChannelRepo(myDB);
+        //repo.RemoveAll();
         items = repo.GetAll();
         adapter = new RssAdapter(items, this);
         recyclerView.setAdapter(adapter);
@@ -152,4 +154,6 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
         intent.putExtra("extras", bundle);
         startActivityForResult(intent, 0);
     }
+
+
 }

@@ -55,10 +55,12 @@ public class ChannelItemsActivity extends AppCompatActivity implements RssItemAd
         bundle.putInt("id", item.getItemId());
         bundle.putString("title", item.getName());
         bundle.putString("description", item.getDescription());
+        bundle.putString("url", item.getLink());
         bundle.putLong("date", item.getPubDate());
         bundle.putInt("channelId", ChannelId);
         bundle.putString("img", item.getThumbnailURL());
-        startActivity(intent);
+        intent.putExtra("details", bundle);
+        startActivityForResult(intent, 0);
     }
 
     @Override

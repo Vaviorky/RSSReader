@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.vaviorky.rssandroid.data.DBHelper;
 import com.example.vaviorky.rssandroid.data.DatabaseManager;
+import com.example.vaviorky.rssandroid.data.model.ChannelItem;
 import com.example.vaviorky.rssandroid.data.model.RSSChannel;
 
 import java.util.ArrayList;
@@ -53,6 +54,15 @@ public class RSSChannelRepo {
     public int Delete(RSSChannel channel) {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
         int delete = db.delete(RSSChannel.TABLE, "id = ?", new String[]{Integer.toString(channel.getChannelId())});
+        DatabaseManager.getInstance().closeDatabase();
+        return delete;
+    }
+
+    public int RemoveAll() {
+        DatabaseManager.initializeInstance(helper);
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        int deletenews = db.delete(ChannelItem.TABLE, null, null);
+        int delete = db.delete(RSSChannel.TABLE, null, null);
         DatabaseManager.getInstance().closeDatabase();
         return delete;
     }
