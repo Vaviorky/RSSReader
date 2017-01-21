@@ -22,6 +22,7 @@ public class LoadingRSSAsync extends AsyncTask<Void, Void, Void> {
         this.context = context;
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage("Wczytywanie...");
+        progressDialog.setCanceledOnTouchOutside(false);
     }
 
     @Override

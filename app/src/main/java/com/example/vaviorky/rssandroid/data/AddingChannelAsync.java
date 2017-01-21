@@ -49,6 +49,8 @@ public class AddingChannelAsync extends AsyncTask<Void, Void, Void> {
                 } else if (count == -3) {
                     Toast.makeText(context, "Nie udało się ustanowić połączenia", Toast.LENGTH_SHORT).show();
 
+                } else if (count == -4) {
+                    Toast.makeText(context, "Wskazane źródło nie jest kanałem RSS", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(context, "Pomyślnie dodano kanał.", Toast.LENGTH_SHORT).show();
                 }
@@ -79,7 +81,11 @@ public class AddingChannelAsync extends AsyncTask<Void, Void, Void> {
     }
 
     private int AddChannelToDatabase() {
-
+        RefreshDataInDatabase refreshDataInDatabase = new RefreshDataInDatabase(context);
+        boolean check = refreshDataInDatabase.isRssChannel(source);
+        if (check == false) {
+            return -4;
+        }
         try {
             URL url = new URL(source);
             URLConnection connection = url.openConnection();
@@ -89,6 +95,7 @@ public class AddingChannelAsync extends AsyncTask<Void, Void, Void> {
             e.printStackTrace();
             return -3;
         }
+
         RSSChannel channel = new RSSChannel();
         channel.setName(name);
         channel.setLink(source);

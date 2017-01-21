@@ -38,7 +38,7 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
     private RecyclerView recyclerView;
     private RssAdapter adapter;
     private ArrayList<RSSChannel> items;
-
+    private RSSChannelRepo repo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +47,7 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
 
         recyclerView = (RecyclerView) findViewById(R.id.RssChannelsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RSSChannelRepo repo = new RSSChannelRepo(myDB);
-        //repo.RemoveAll();
+        repo = new RSSChannelRepo(myDB);
         items = repo.GetAll();
         adapter = new RssAdapter(items, this);
         recyclerView.setAdapter(adapter);
@@ -152,8 +151,16 @@ public class RSSMainActivity extends AppCompatActivity implements RssAdapter.Ite
         Log.d(TAG, "onCreate: Checking id from main activity: " + channel.getChannelId());
 
         intent.putExtra("extras", bundle);
-        startActivityForResult(intent, 0);
+        startActivity(intent);
     }
 
+    private void AddExampleData() {
+        RSSChannel channel = new RSSChannel("SwiatWyscigow.pl", "http://swiatwyscigow.pl/itemlist?format=feed&type=rss");
+        repo.Insert(channel);
+        channel = new RSSChannel("gpupdate.net", "http://feeds.gpupdate.net/en/rss.xml");
+        repo.Insert(channel);
+        channel = new RSSChannel("motorsport.com rally", "http://www.motorsport.com/rss/category/rally/news/");
+        repo.Insert(channel);
+    }
 
 }

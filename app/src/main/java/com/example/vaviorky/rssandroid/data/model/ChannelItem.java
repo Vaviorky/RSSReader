@@ -1,10 +1,12 @@
 package com.example.vaviorky.rssandroid.data.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Vaviorky on 04.01.2017.
  */
 
-public class ChannelItem {
+public class ChannelItem implements Serializable {
     public static final String TAG = ChannelItem.class.getSimpleName();
     public static final String TABLE = "ChannelItem";
 

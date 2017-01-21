@@ -10,45 +10,57 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.vaviorky.rssandroid.RSSDetails">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/RssNewsDetailsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:text="TextView"
-        android:textColor="@android:color/black"
-        android:textSize="24dp"
-        android:textStyle="bold" />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:stretchColumns="1">
 
-    <TextView
-        android:id="@+id/RssNewsDetailsDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/RssNewsDetailsDate"
-        android:layout_marginTop="20dp"
-        android:text="TextView"
-        android:textSize="18dp" />
 
-    <Button
-        android:id="@+id/ButtonGoToSite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/RssNewsDetailsDescription"
+            <TextView
+                android:id="@+id/RssNewsDetailsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:text="TextView"
+                android:textColor="@android:color/black"
+                android:textSize="24dp"
+                android:textStyle="bold" />
 
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="34dp"
-        android:text="Odwiedź stronę" />
+            <TextView
+                android:id="@+id/RssNewsDetailsDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/RssNewsDetailsTitle"
+                android:layout_marginTop="18dp"
+                android:text="TextView" />
 
-    <TextView
-        android:id="@+id/RssNewsDetailsDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/RssNewsDetailsTitle"
-        android:layout_marginTop="18dp"
-        android:text="TextView" />
+            <TextView
+                android:id="@+id/RssNewsDetailsDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/RssNewsDetailsDate"
+                android:layout_marginTop="11dp"
+                android:text="TextView"
+                android:textSize="18dp" />
 
+            <Button
+                android:id="@+id/ButtonGoToSite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/RssNewsDetailsDescription"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="34dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Odwiedź stronę"
+                android:textColor="#FFFFFF" />
+        </TableLayout>
+    </ScrollView>
 </RelativeLayout>

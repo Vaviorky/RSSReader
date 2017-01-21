@@ -15,7 +15,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DateFormat;
@@ -26,9 +25,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * Created by Vaviorky on 04.01.2017.
@@ -82,44 +78,18 @@ public class RSSParser {
         return RssItems;
     }
 
-    public Document GetData(String address) {
-        try {
-            if (!address.startsWith("http://")) {
-                address = "http://" + address;
-            }
-            URL url = new URL(address);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            InputStream inputStream = connection.getInputStream();
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-
-            return builder.parse(inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public ArrayList<ChannelItem> getChannelItemsRome(String feedurl) throws IOException, FeedException {
         ArrayList<ChannelItem> list = new ArrayList<>();
         URL url = new URL(feedurl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        Log.d(TAG, "getChannelItemsRome: first");
         SyndFeedInput input = new SyndFeedInput();
         XmlReader reader = new XmlReader(connection);
         SyndFeed feed = input.build(reader);
 
         List entries = feed.getEntries();
         Iterator itEntries = entries.iterator();
-        Log.d(TAG, "getChannelItemsRome: before loop");
         while (itEntries.hasNext()) {
             SyndEntry entry = (SyndEntry) itEntries.next();
-            Log.d(TAG, "getChannelItemsRome: title: " + entry.getTitle());
-            Log.d(TAG, "getChannelItemsRome: description: " + entry.getDescription());
-            Log.d(TAG, "getChannelItemsRome: author: " + entry.getAuthor());
-            Log.d(TAG, "getChannelItemsRome: date: " + entry.getPublishedDate());
-            Log.d(TAG, "getChannelItemsRome: link: " + entry.getLink());
             String author = entry.getAuthor();
             if (author.contains("(")) {
                 int openBracket = author.indexOf('(') + 1;

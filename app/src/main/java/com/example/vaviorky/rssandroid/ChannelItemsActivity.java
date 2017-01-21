@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.vaviorky.rssandroid.data.DBHelper;
@@ -36,7 +35,6 @@ public class ChannelItemsActivity extends AppCompatActivity implements RssItemAd
         Bundle extras = getIntent().getBundleExtra("extras");
         setTitle(extras.get("title").toString());
         ChannelId = (int) extras.get("id");
-        Log.d(TAG, "onCreate: Checking id in channel: " + ChannelId);
 
         items = repo.getData(ChannelId);
         adapter = new RssItemAdapter(items, this);
@@ -51,16 +49,8 @@ public class ChannelItemsActivity extends AppCompatActivity implements RssItemAd
     public void onItemClick(int p) {
         ChannelItem item = items.get(p);
         Intent intent = new Intent(this, RSSDetails.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("id", item.getItemId());
-        bundle.putString("title", item.getName());
-        bundle.putString("description", item.getDescription());
-        bundle.putString("url", item.getLink());
-        bundle.putLong("date", item.getPubDate());
-        bundle.putInt("channelId", ChannelId);
-        bundle.putString("img", item.getThumbnailURL());
-        intent.putExtra("details", bundle);
-        startActivityForResult(intent, 0);
+        intent.putExtra("newsitem", item);
+        startActivity(intent);
     }
 
     @Override
@@ -71,4 +61,6 @@ public class ChannelItemsActivity extends AppCompatActivity implements RssItemAd
         }
         return true;
     }
+
+
 }

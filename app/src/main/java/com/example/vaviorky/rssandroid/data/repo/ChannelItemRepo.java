@@ -48,19 +48,18 @@ public class ChannelItemRepo {
     }
 
     public ArrayList<ChannelItem> getData(int channelId) {
-        Log.d(TAG, "getData: getchannelId " + Integer.toString(channelId));
         ArrayList<ChannelItem> items = new ArrayList<>();
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        String query = "select * from " + ChannelItem.TABLE + " where ChannelId = ?";
+        String query = "select * from " + ChannelItem.TABLE + " where ChannelId = ? order by date desc";
         Cursor cursor = db.rawQuery(query, new String[]{Integer.toString(channelId)});
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             ChannelItem newsitem = new ChannelItem();
             newsitem.setChannelId(channelId);
             newsitem.setName(cursor.getString(1));
-            Log.d(TAG, "getData: " + cursor.getString(1));
             newsitem.setDescription(cursor.getString(2));
             newsitem.setLink(cursor.getString(3));
             newsitem.setPubDate(cursor.getLong(4));
+            newsitem.setAuthor(cursor.getString(5));
             newsitem.setThumbnailURL(cursor.getString(6));
             items.add(newsitem);
         }
@@ -69,9 +68,4 @@ public class ChannelItemRepo {
         DatabaseManager.getInstance().closeDatabase();
         return items;
     }
-
-    public void deleteAll() {
-
-    }
-
 }

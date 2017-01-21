@@ -16,6 +16,13 @@ public class RSSChannel {
     private String Name;
     private String Link;
 
+    public RSSChannel() {
+    }
+
+    public RSSChannel(String name, String link) {
+        this.Name = name;
+        this.Link = link;
+    }
     public String getLink() {
         return Link;
     }

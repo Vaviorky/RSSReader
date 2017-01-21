@@ -32,6 +32,21 @@ public class RSSChannelRepo {
                 + RSSChannel.KEY_Link + " text)";
     }
 
+    public static RSSChannel getById(int channelId) {
+        RSSChannel channel = new RSSChannel();
+        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
+        String query = "Select * from " + RSSChannel.TABLE + " where ChannelId = " + channelId;
+        Cursor cursor = db.rawQuery(query, null);
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            channel.setChannelId(cursor.getInt(1));
+            channel.setName(cursor.getString(1));
+            channel.setLink(cursor.getString(2));
+        }
+        cursor.close();
+        DatabaseManager.getInstance().closeDatabase();
+        return channel;
+    }
+
     public int Insert(RSSChannel rssChannel) {
         int itemchannelId;
         DatabaseManager.initializeInstance(helper);
@@ -96,21 +111,6 @@ public class RSSChannelRepo {
             cursor.close();
             return true;
         }
-    }
-
-    public RSSChannel getById(int channelId) {
-        RSSChannel channel = new RSSChannel();
-        SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
-        String query = "Select * from " + RSSChannel.TABLE + " where ChannelId = " + channelId;
-        Cursor cursor = db.rawQuery(query, null);
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            channel.setChannelId(cursor.getInt(1));
-            channel.setName(cursor.getString(1));
-            channel.setLink(cursor.getString(2));
-        }
-        cursor.close();
-        DatabaseManager.getInstance().closeDatabase();
-        return channel;
     }
 
 }
